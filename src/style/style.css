@@ -1,0 +1,41 @@
+.main-area {
+    background: #f2f2f2;
+
+    height: 768px;
+    width: 1024px;
+
+    overflow-y: hidden;
+}
+
+.gallery-row {
+    height: 384px;
+    width: 100%;
+
+    overflow: hidden;
+}
+.gallery-row:first-child {
+    margin-top: 192px;
+}
+    .gallery-row--item {
+        height: 100%;
+        width: 20%;
+
+        box-sizing: border-box;
+        padding: 40px 10px;
+
+        float: left;
+    }
+        .gallery-row--item > div {
+            background-size: cover;
+
+            height: 100%;
+            width: 100%;
+
+            position: relative;
+            top: 50%;
+            left: 0;
+            transform: translate(0, -50%);
+        }
+        .gallery-row--item.active > div {
+            outline: 3px solid red;
+        }

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pictures</title>
+
+    <link rel="stylesheet" href="style/style.css">
+
+    <script>
+        var APP_DEBUG = true;
+    </script>
+</head>
+<body>
+    <div id="main_area" class="main-area"></div>
+
+    <!-- libs -->
+    <script src="lib/es6-promise.js"></script>
+    <script src="lib/simple-event.js"></script>
+
+    <!-- providers -->
+    <script src="app/providers/FlickrApiProvider.js"></script>
+
+    <!-- models -->
+    <script src="app/PhotoList.model.js"></script>
+
+    <!-- controllers -->
+    <script src="app/PhotoList.controller.js"></script>
+
+    <!-- views -->
+    <script src="app/PhotoList.view.js"></script>
+
+    <!-- BOOTSTRAP -->
+    <script src="index.js"></script>
+</body>
+</html>
