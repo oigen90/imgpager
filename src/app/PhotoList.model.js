@@ -15,15 +15,15 @@ var PhotoListModel = (function () {
     var _normalRowsCount;
     var _preLastRowIndex;
 
-    var _event_activeRowChanged, _event_activeItemChanged;
+    var _event_activeRowChanged, _event_activeItemChanged, _event_listChanged;
 
     function PhotoListModel (itemsPerPage, itemsPerRow) {
         var context = this;
         this.api = app.flickrApiProvider;
 
-        this._event_listChanged = new SimpleEvent(true);
+        _event_listChanged = new SimpleEvent(true);
         this.onListChanged = function (handler) {
-            this._event_listChanged.subscribe(handler);
+            _event_listChanged.subscribe(handler);
         };
 
         _event_activeRowChanged = new SimpleEvent(true);
@@ -46,7 +46,7 @@ var PhotoListModel = (function () {
             currentList = serverData['photos']['photo'].chunk(5);
             return currentList;
         }).then(function(currentList) {
-            context._event_listChanged.fire(currentList);
+            _event_listChanged.fire(currentList);
             _event_activeRowChanged.fire({old: currentRowIndex, new: currentRowIndex});
             _event_activeItemChanged.fire({old: currentItemIndex, new: currentItemIndex});
         });
@@ -95,12 +95,10 @@ var PhotoListModel = (function () {
                         return true;
                     }).then(function (status) {
                         shiftListDown(currentRowIndex - 1);
-                        context._event_listChanged.fire(currentList);
                     });
                     // nextPageList = nextPageListMock.chunk(5);
                 } else {
                     shiftListDown(currentRowIndex - 1);
-                    context._event_listChanged.fire(currentList);
                 }
             }
         }
@@ -120,13 +118,11 @@ var PhotoListModel = (function () {
                         return true;
                     }).then(function (status) {
                         shiftListUp(_normalRowsCount - (currentRowIndex + 1));
-                        context._event_listChanged.fire(currentList);
                     });
-                // } else if (currentPage === 1 && currentRowIndex <= 1) {
-                //     return;
+                } else if (currentPage === 1 && currentRowIndex <= 1) {
+                    return;
                 } else {
                     shiftListUp(_normalRowsCount - (currentRowIndex + 1));
-                    context._event_listChanged.fire(currentList);
                 }
             }
         }
@@ -138,7 +134,7 @@ var PhotoListModel = (function () {
 
         _event_activeItemChanged.fire({old: oldValue, new: newValue});
 
-        console.log('Item: ' + currentItemIndex + ' in row: ' + currentRowIndex + '. Data: ' + currentList[currentRowIndex][currentItemIndex].id);
+        console.log('Page: ' + currentPage + '. Item: ' + currentItemIndex + ' in row: ' + currentRowIndex + '. Data: ' + currentList[currentRowIndex][currentItemIndex].id);
     }
 
     function rowIndexChange(oldValue, newValue) {
@@ -146,7 +142,7 @@ var PhotoListModel = (function () {
 
         _event_activeRowChanged.fire({old: oldValue, new: newValue});
 
-        console.log('Item: ' + currentItemIndex + ' in row: ' + currentRowIndex + '. Data: ' + currentList[currentRowIndex][currentItemIndex].id);
+        console.log('Page: ' + currentPage + '. Item: ' + currentItemIndex + ' in row: ' + currentRowIndex + '. Data: ' + currentList[currentRowIndex][currentItemIndex].id);
     }
 
     function shiftListDown(numberOfRows) {
@@ -154,6 +150,8 @@ var PhotoListModel = (function () {
 
         prevPageList = prevPageList.concat(currentList.splice(0, numberOfRows));
         currentList = currentList.concat(nextPageList.splice(0, numberOfRows));
+
+        _event_listChanged.fire(currentList);
 
         rowIndexChange(currentRowIndex, currentRowIndex - numberOfRows);
 
@@ -164,6 +162,8 @@ var PhotoListModel = (function () {
 
         nextPageList = currentList.splice(numberOfRows * -1, 9e9).concat(nextPageList);
         currentList = prevPageList.splice(numberOfRows * -1, 9e9).concat(currentList);
+
+        _event_listChanged.fire(currentList);
 
         rowIndexChange(currentRowIndex, _preLastRowIndex);
     }

@@ -50,24 +50,24 @@ var PhotoListView = (function () {
         var newItem = $element.children[rowData.new].children[context.activeItem];
         oldItem.classList.remove('active');
 
-        scrollRow(rowData.new);
+        scrollRow(rowData);
 
         newItem.classList.add('active');
     };
 
-    function scrollRow (toIndex) {
-        var scrollPos;
-        if (!toIndex) {
-            scrollPos = _scrollHeight
+    function scrollRow (rowData) {
+        var diff = rowData.new - rowData.old;
+        if (Math.abs(diff) === 1) {
+            $element.scrollBy({
+                top: _scrollHeight * diff,
+                left: 0,
+                behavior: 'smooth'
+            });
         } else {
-            scrollPos = _scrollHeight * toIndex;
+            $element.scrollTo(0, _scrollHeight * rowData.new);
         }
-
-        $element.scrollBy({
-            top: scrollPos,
-            left: 0,
-            behavior: 'smooth'
-        })
+        // } else if (rowData.new === 0) {
+        //     $element.scrollTo(0, 0);
     }
 
     function createRow (rowData) {
